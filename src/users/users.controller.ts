@@ -24,6 +24,12 @@ export class UsersController {
     const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
     const result = await this.userService.insertUser(userName, hashedPassword);
 
+    if (!result) {
+      return {
+        msg: 'username already exists',
+      };
+    }
+
     return {
       msg: 'User successfully registered',
       userId: result.id,

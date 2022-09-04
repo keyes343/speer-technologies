@@ -37,7 +37,7 @@ export class User {
   // @Prop({ type: mongoose.Types.ObjectId, required: false })
   _id?: string;
 
-  @Prop()
+  @Prop({ type: String, unique: true })
   username: string;
 
   @Prop()

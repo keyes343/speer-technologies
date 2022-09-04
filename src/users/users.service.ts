@@ -9,6 +9,10 @@ export class UsersService {
 
   async insertUser(userName: string, password: string) {
     const username = userName.toLowerCase();
+    const already_exists = await this.userModel.findOne({ username: 'max' });
+    if (already_exists) {
+      return false;
+    }
     const newUser = new this.userModel({
       username,
       password,
