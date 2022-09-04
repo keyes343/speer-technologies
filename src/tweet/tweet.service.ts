@@ -41,6 +41,34 @@ export class TweetService {
     const updatedTweet = await fetchTweet.update({
       tweet,
     });
-    return updatedTweet;
+    return {
+      msg: 'tweet updated',
+    };
+  }
+
+  async readTweetById(tweetId: string) {
+    const tweet = await this.tweetModel.findById(tweetId);
+    return {
+      tweet,
+    };
+  }
+  async readTweetByUser(userId: string) {
+    const tweets = await this.tweetModel.find({ userId });
+    return {
+      tweets,
+    };
+  }
+
+  async deleteTweet(userId: string, tweetId: string) {
+    // check if tweet belongs to same user
+    const fetchTweet = await this.tweetModel.findById(tweetId);
+    if (fetchTweet.userId.toString() !== userId) {
+      return {
+        msg: 'tweet doesnt belong to this user',
+      };
+    }
+    await fetchTweet.delete();
+
+    return 'deleted successfully';
   }
 }

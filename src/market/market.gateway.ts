@@ -5,23 +5,30 @@ import {
   OnGatewayInit,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { forwardRef, Injectable, Logger, Inject } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { MarketService } from './market.service';
 
 @WebSocketGateway({
   cors: { origin: '*' },
 })
+@Injectable()
 export class MarketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private marketService: MarketService) {}
+  constructor(
+    @Inject(forwardRef(() => MarketService))
+    private marketService: MarketService,
+  ) {}
 
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('AppGateway');
 
   handleConnection(client: any, ...args: any[]) {
+    this.logger.log('connection established');
     console.log('connection established');
     return {
       msg: 'connection established',
@@ -43,7 +50,15 @@ export class MarketGateway
   }
 
   @SubscribeMessage('messageToServer')
-  handleMessage(client: Socket, payload: string): string {
+  handleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: string,
+  ): string {
+    // handleMessage(client: Socket, payload: string): string {
+
+    console.log({ data });
+    // this.server.emit('messageToClient', data);
+
     return 'Hello world!';
   }
 }

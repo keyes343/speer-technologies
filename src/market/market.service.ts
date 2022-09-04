@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, CompaniesOwned } from '../users/users.model';
 import { Market } from './market.model';
 import { Document } from 'mongoose';
+import { MarketGateway } from './market.gateway';
 
 // type PayloadUpdateCoreCompany = {
 //   company_name: keyof AllCompanies['company_name'];
@@ -16,6 +17,8 @@ import { Document } from 'mongoose';
 @Injectable()
 export class MarketService {
   constructor(
+    @Inject(forwardRef(() => MarketGateway))
+    private gateway: MarketGateway,
     @InjectModel('market') private readonly market: Model<Market>,
     @InjectModel('user') private readonly user: Model<User>,
   ) {}
@@ -39,7 +42,7 @@ export class MarketService {
       remainings_stocks > quantity &&
       user.bank_balance > quantity * company.price_per_stock
     ) {
-      const user_after_buying_stocks = this.user_just_bought_some_stocks(
+      const user_after_buying_stocks = await this.user_just_bought_some_stocks(
         user,
         company,
         quantity,
@@ -75,6 +78,7 @@ export class MarketService {
       remainings_stocks,
       index_of_stock_in_user_profile,
     });
+
     return false;
   }
 
@@ -123,6 +127,10 @@ export class MarketService {
     market.price_total = market.remaining_stocks * market.price_per_stock;
     await market.save();
 
+    this.gateway.server.emit('afterUserAction', user);
+
+    console.log('returning user after buying');
+    console.log({ user });
     return { user };
   }
 
@@ -166,6 +174,14 @@ export class MarketService {
     market.price_total = market.remaining_stocks * market.price_per_stock;
     await market.save();
 
+    this.gateway.server.emit('afterUserAction', user);
+
     return { user };
   }
+
+  // testt(body) {
+  //   console.log('testt happenning');
+  //   console.log({ body });
+  //   this.gateway.server.emit('testt', { body });
+  // }
 }

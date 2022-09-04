@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { TweetModule } from './tweet/tweet.module';
 import { TweetController } from './tweet/tweet.controller';
 import { MarketModule } from './market/market.module';
-import { MarketGateway } from './market/market.gateway';
+// import { MarketGateway } from './market/market.gateway';
 
 @Module({
   imports: [
@@ -20,6 +20,6 @@ import { MarketGateway } from './market/market.gateway';
     MarketModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MarketGateway],
+  providers: [AppService],
 })
 export class AppModule {}
