@@ -45,11 +45,29 @@ export class UsersController {
     return req.user;
   }
 
+  @UseGuards(AuthenticatedGuard)
+  @Post('/profile')
+  async getProfile(@Body() body: { userId: string }) {
+    const user = await this.userService.getProfile(body.userId);
+    return user;
+  }
+
   @Get('/logout')
   logout(@Request() req) {
     req.session.destroy();
     return {
       msg: 'The user session has ended',
     };
+  }
+
+  @Post('/add_balance')
+  async addBalance(
+    @Body() body: { additional_balance: number; userId: string },
+  ) {
+    const user = await this.userService.addBalance(
+      body.additional_balance,
+      body.userId,
+    );
+    return user;
   }
 }

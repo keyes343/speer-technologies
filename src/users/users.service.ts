@@ -22,4 +22,16 @@ export class UsersService {
     const user = await this.userModel.findOne({ username });
     return user;
   }
+
+  async getProfile(userId: string) {
+    const user = await this.userModel.findOne({ _id: userId });
+    return user;
+  }
+
+  async addBalance(additional_balance: number, userId: string) {
+    const user = await this.userModel.findOne({ _id: userId });
+    user.bank_balance += additional_balance;
+    await user.save();
+    return { user };
+  }
 }
