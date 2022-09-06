@@ -1,8 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
+import httpMocks from 'node-mocks-http';
 
 describe('UsersController', () => {
   let controller: UsersController;
+
+  // const mockUsersService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

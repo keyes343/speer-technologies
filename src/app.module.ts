@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TweetModule } from './tweet/tweet.module';
 import { TweetController } from './tweet/tweet.controller';
+import { MarketModule } from './market/market.module';
+// import { MarketGateway } from './market/market.gateway';
 
 @Module({
   imports: [
@@ -15,6 +17,7 @@ import { TweetController } from './tweet/tweet.controller';
     UsersModule,
     AuthModule,
     TweetModule,
+    MarketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

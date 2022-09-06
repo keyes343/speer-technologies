@@ -7,6 +7,7 @@ import {
   Put,
   Request,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { TweetService } from './tweet.service';
 import { AuthenticatedGuard } from '../auth/authenticated.guard';
@@ -45,6 +46,32 @@ export class TweetController {
   ) {
     const updated = await this.tweetService.updateTweet(userId, tweetId, tweet);
     return { updated };
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('/readTweetById')
+  async readTweetById(@Body('tweetId') tweetId: string) {
+    const tweet = await this.tweetService.readTweetById(tweetId);
+    return tweet;
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Post('/readTweetByUser')
+  async readTweetByUser(@Body('userId') userId: string) {
+    const tweet = await this.tweetService.readTweetByUser(userId);
+    return tweet;
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Delete('/delete')
+  async deleteTweet(@Body() body: { userId: string; tweetId: string }) {
+    const deleted = await this.tweetService.deleteTweet(
+      body.userId,
+      body.tweetId,
+    );
+    return {
+      deleted,
+    };
   }
 }
 
